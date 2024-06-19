@@ -22,5 +22,21 @@ exports.signup = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
     try {
-    } catch (error) {}
+        const user = await User.findOne({ email: req.body.email })
+        if (!user) {
+            return res.status(401).json({ message: "Invalid user/password" })
+        }
+
+        const valid = await bcrypt.compare(req.body.password, user.password)
+        if (!valid) {
+            return res.status(401).json({ message: "Invalid user/password" })
+        }
+
+        res.status(200).json({
+            userId: user._id,
+            token: "TOKEN",
+        })
+    } catch (error) {
+        res.status(500).json({ error })
+    }
 }
