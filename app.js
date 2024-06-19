@@ -24,8 +24,13 @@ app.use((req, res, next) => {
     next()
 })
 
-app.use((req, res) => {
-    res.json({ message: "test server port 3100" })
+app.get("/api/books", async (req, res, next) => {
+    try {
+        const books = await Book.find()
+        res.status(200).json(books)
+    } catch (error) {
+        res.status(400).json({ error })
+    }
 })
 
 module.exports = app
