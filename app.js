@@ -42,4 +42,16 @@ app.get("/api/books/:id", async (req, res, next) => {
     }
 })
 
+app.get("/api/books/bestrating", async (req, res, next) => {
+    try {
+        const books = await Book.find()
+        const topBooks = books
+            .sort((a, b) => b.averageRating - a.averageRating)
+            .slice(0, 3)
+        res.status(200).json(topBooks)
+    } catch (error) {
+        res.status(400).json({ error })
+    }
+})
+
 module.exports = app
