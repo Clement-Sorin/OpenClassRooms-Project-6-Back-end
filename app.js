@@ -1,7 +1,7 @@
 require("dotenv").config()
 const express = require("express")
 const mongoose = require("mongoose")
-const Book = require("./models/Book")
+const bookRouter = require("./routes/books")
 
 const app = express()
 
@@ -24,34 +24,6 @@ app.use((req, res, next) => {
     next()
 })
 
-app.get("/api/books", async (req, res, next) => {
-    try {
-        const books = await Book.find()
-        res.status(200).json(books)
-    } catch (error) {
-        res.status(400).json({ error })
-    }
-})
-
-app.get("/api/books/:id", async (req, res, next) => {
-    try {
-        const book = await Book.findOne({ _id: req.params.id })
-        res.status(200).json(book)
-    } catch (error) {
-        res.status(400).json({ error })
-    }
-})
-
-app.get("/api/books/bestrating", async (req, res, next) => {
-    try {
-        const books = await Book.find()
-        const topBooks = books
-            .sort((a, b) => b.averageRating - a.averageRating)
-            .slice(0, 3)
-        res.status(200).json(topBooks)
-    } catch (error) {
-        res.status(400).json({ error })
-    }
-})
+app.use("/api/books", bookRouter)
 
 module.exports = app
