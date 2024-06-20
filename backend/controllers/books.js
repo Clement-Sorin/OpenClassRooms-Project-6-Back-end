@@ -31,3 +31,10 @@ exports.getBestRating = async (req, res, next) => {
         res.status(404).json({ error })
     }
 }
+
+exports.createBook = async (req, res, next) => {
+    try {
+    } catch (error) {
+        res.status(400).json({ error })
+    }
+}

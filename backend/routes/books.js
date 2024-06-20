@@ -5,6 +5,7 @@ const auth = require("../middleware/auth")
 
 router.get("/", booksCtrl.getAllBooks)
 router.get("/bestrating", booksCtrl.getBestRating)
+router.post("/", auth, booksCtrl.createBook)
 router.get("/:id", booksCtrl.getOneBook)
 
 module.exports = router
