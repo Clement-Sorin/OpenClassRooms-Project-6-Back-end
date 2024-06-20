@@ -21,11 +21,13 @@ exports.getOneBook = async (req, res, next) => {
 exports.getBestRating = async (req, res, next) => {
     try {
         const books = await Book.find()
-        const topBooks = books
-            .sort((a, b) => b.averageRating - a.averageRating)
+        const topRated = books
+            .sort((a, b) => {
+                return b.averageRating - a.averageRating
+            })
             .slice(0, 3)
-        res.status(200).json(topBooks)
+        res.status(200).json(topRated)
     } catch (error) {
-        res.status(400).json({ error })
+        res.status(404).json({ error })
     }
 }

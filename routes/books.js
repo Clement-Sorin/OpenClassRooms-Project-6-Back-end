@@ -4,7 +4,7 @@ const booksCtrl = require("../controllers/books")
 const auth = require("../middleware/auth")
 
 router.get("/", booksCtrl.getAllBooks)
-router.get("/:id", booksCtrl.getOneBook)
 router.get("/bestrating", booksCtrl.getBestRating)
+router.get("/:id", booksCtrl.getOneBook)
 
 module.exports = router
