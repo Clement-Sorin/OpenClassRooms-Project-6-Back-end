@@ -11,8 +11,10 @@ exports.createBook = async (req, res, next) => {
             imageUrl: `${req.protocol}://${req.get("host")}/images/${
                 req.file.filename
             }`,
+            ratings: [],
+            averageRating: 0,
         })
-        book.save()
+        await book.save()
         res.status(201).json({ message: "Objet enregistré !" })
     } catch (error) {
         res.status(400).json({ error })
