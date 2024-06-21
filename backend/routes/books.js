@@ -8,5 +8,6 @@ router.post("/", auth, multer, booksCtrl.createBook)
 router.get("/", booksCtrl.getAllBooks)
 router.get("/bestrating", booksCtrl.getBestRating)
 router.get("/:id", booksCtrl.getOneBook)
+router.put("/:id", auth, multer, booksCtrl.modifyBook)
 
 module.exports = router
