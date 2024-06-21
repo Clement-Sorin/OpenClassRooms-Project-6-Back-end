@@ -1,3 +1,4 @@
+const fs = require("fs").promises
 const Book = require("../models/Book")
 
 exports.getAllBooks = async (req, res, next) => {
@@ -83,5 +84,28 @@ exports.modifyBook = async (req, res, next) => {
         res.status(200).json({ message: "book modified" })
     } catch (error) {
         res.status(400).json({ error })
+    }
+}
+
+exports.deleteBook = async (req, res, next) => {
+    try {
+        const book = await Book.findOne({ _id: req.params.id })
+        if (!book) {
+            return res.status(404).json({ message: "Book not found" })
+        }
+        if (book.userId != req.auth.userId) {
+            return res.status(401).json({ message: "not authorized" })
+        }
+        try {
+            const filename = book.imageUrl.split("/images/")[1]
+            await fs.unlink(`images/${filename}`)
+            await Book.deleteOne({ _id: req.params.id })
+            res.status(200).json({ message: "book deleted" })
+        } catch (error) {
+            res.status(400).json({ message: "error in book deletion" })
+        }
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error })
     }
 }

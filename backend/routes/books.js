@@ -9,5 +9,6 @@ router.get("/", booksCtrl.getAllBooks)
 router.get("/bestrating", booksCtrl.getBestRating)
 router.get("/:id", booksCtrl.getOneBook)
 router.put("/:id", auth, multer, booksCtrl.modifyBook)
+router.delete("/:id", auth, booksCtrl.deleteBook)
 
 module.exports = router
