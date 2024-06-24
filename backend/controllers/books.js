@@ -114,22 +114,28 @@ exports.deleteBook = async (req, res, next) => {
 exports.addRating = async (req, res) => {
     try {
         const requestUserId = req.body.userId
+        const requestRating = req.body.rating
         const newRating = {
             userId: requestUserId,
-            grade: req.body.rating,
+            grade: requestRating,
         }
         const book = await Book.findOne({ _id: req.params.id })
-        const bookRates = book.ratings
-        const dbRatingUserIds = bookRates.map((id) => id.userId)
-        const userIdFilter = dbRatingUserIds.filter(
-            (dbUserId) => dbUserId === requestUserId
+        const userIdExists = book.ratings.some(
+            (rating) => rating.userId === requestUserId
         )
-        if (userIdFilter < 1) {
+
+        if (!userIdExists && requestRating >= 0 && requestRating <= 5) {
+            //add new rating
             book.ratings.push(newRating)
+
+            // change averageRating value
+            const tableRating = book.ratings.map((rating) => rating.grade)
+            book.averageRating =
+                tableRating.reduce((a, b) => a + b, 0) / tableRating.length
+
             await book.save()
-            return res
-                .status(200)
-                .json({ message: "new rating add successfully" })
+
+            return res.status(200).json(book)
         } else {
             res.status(400).json({
                 message: "user can't post a rating more than once",
