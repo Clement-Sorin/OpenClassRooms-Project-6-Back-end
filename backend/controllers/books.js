@@ -124,7 +124,12 @@ exports.addRating = async (req, res) => {
             (rating) => rating.userId === requestUserId
         )
 
-        if (!userIdExists && requestRating >= 0 && requestRating <= 5) {
+        if (
+            requestUserId !== book.userId &&
+            !userIdExists &&
+            requestRating >= 0 &&
+            requestRating <= 5
+        ) {
             //add new rating
             book.ratings.push(newRating)
 
@@ -132,14 +137,11 @@ exports.addRating = async (req, res) => {
             const tableRating = book.ratings.map((rating) => rating.grade)
             book.averageRating =
                 tableRating.reduce((a, b) => a + b, 0) / tableRating.length
-
             await book.save()
 
             return res.status(200).json(book)
         } else {
-            res.status(400).json({
-                message: "user can't post a rating more than once",
-            })
+            res.status(400).json({ error })
         }
     } catch (error) {
         res.status(400).json({ error })
