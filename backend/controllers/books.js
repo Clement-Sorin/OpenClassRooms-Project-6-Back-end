@@ -122,7 +122,7 @@ exports.addRating = async (req, res) => {
         const bookRates = book.ratings
         const dbRatingUserIds = bookRates.map((id) => id.userId)
         const userIdFilter = dbRatingUserIds.filter(
-            (dbUserId) => dbUserId === "1"
+            (dbUserId) => dbUserId === requestUserId
         )
         if (userIdFilter < 1) {
             book.ratings.push(newRating)
