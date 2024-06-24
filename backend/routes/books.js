@@ -10,5 +10,6 @@ router.get("/bestrating", booksCtrl.getBestRating)
 router.get("/:id", booksCtrl.getOneBook)
 router.put("/:id", auth, multer, booksCtrl.modifyBook)
 router.delete("/:id", auth, booksCtrl.deleteBook)
+router.post("/:id/rating", auth, booksCtrl.addRating)
 
 module.exports = router

@@ -1,4 +1,5 @@
 const fs = require("fs").promises
+const { userInfo } = require("os")
 const Book = require("../models/Book")
 
 exports.getAllBooks = async (req, res, next) => {
@@ -107,5 +108,34 @@ exports.deleteBook = async (req, res, next) => {
     } catch (error) {
         console.error(error)
         res.status(500).json({ error })
+    }
+}
+
+exports.addRating = async (req, res) => {
+    try {
+        const requestUserId = req.body.userId
+        const newRating = {
+            userId: requestUserId,
+            grade: req.body.rating,
+        }
+        const book = await Book.findOne({ _id: req.params.id })
+        const bookRates = book.ratings
+        const dbRatingUserIds = bookRates.map((id) => id.userId)
+        const userIdFilter = dbRatingUserIds.filter(
+            (dbUserId) => dbUserId === "1"
+        )
+        if (userIdFilter < 1) {
+            book.ratings.push(newRating)
+            await book.save()
+            return res
+                .status(200)
+                .json({ message: "new rating add successfully" })
+        } else {
+            res.status(400).json({
+                message: "user can't post a rating more than once",
+            })
+        }
+    } catch (error) {
+        res.status(400).json({ error })
     }
 }
