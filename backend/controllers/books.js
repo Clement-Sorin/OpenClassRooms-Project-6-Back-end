@@ -1,5 +1,4 @@
 const fs = require("fs").promises
-const { userInfo } = require("os")
 const Book = require("../models/Book")
 
 exports.getAllBooks = async (req, res, next) => {
@@ -78,11 +77,17 @@ exports.modifyBook = async (req, res, next) => {
             return res.status(401).json({ message: "not authorized" })
         }
 
-        await Book.updateOne(
-            { _id: req.params.id },
-            { ...bookObject, _id: req.params.id }
-        )
-        res.status(200).json({ message: "book modified" })
+        try {
+            const filename = book.imageUrl.split("/images/")[1]
+            await fs.unlink(`images/${filename}`)
+            await Book.updateOne(
+                { _id: req.params.id },
+                { ...bookObject, _id: req.params.id }
+            )
+            res.status(200).json({ message: "book modified" })
+        } catch (error) {
+            res.status(400).json({ error })
+        }
     } catch (error) {
         res.status(400).json({ error })
     }
