@@ -19,6 +19,7 @@ Sixth project of the OpenClassrooms Web Developer course
 - Bcrypt
 - JSON Web Token
 - Multer
+- Sharp
 
 ## Goal 
 
