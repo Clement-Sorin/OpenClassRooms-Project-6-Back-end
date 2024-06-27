@@ -124,31 +124,34 @@ exports.addRating = async (req, res) => {
             userId: requestUserId,
             grade: requestRating,
         }
-        const book = await Book.findOne({ _id: req.params.id })
+
+        const book = await Book.findById(req.params.id)
         const userIdExists = book.ratings.some(
             (rating) => rating.userId === requestUserId
         )
 
         if (
-            requestUserId !== book.userId &&
-            !userIdExists &&
-            requestRating >= 0 &&
-            requestRating <= 5
+            requestUserId === book.userId ||
+            (userIdExists && requestRating >= 0 && requestRating <= 5)
         ) {
-            //add new rating
-            book.ratings.push(newRating)
-
-            // change averageRating value
-            const tableRating = book.ratings.map((rating) => rating.grade)
-            book.averageRating =
-                tableRating.reduce((a, b) => a + b, 0) / tableRating.length
-            await book.save()
-
+            // Erreur non gérer dans le frontend :
+            // res.status(400).json({ message: "Vous n'avez pas le droit" })
+            // Pour éviter un crash du serveur je retourne une réponse 200 avec le book
             return res.status(200).json(book)
-        } else {
-            res.status(400).json({ error })
         }
+
+        //add new rating
+        book.ratings.push(newRating)
+
+        // change averageRating value
+        const tableRating = book.ratings.map((rating) => rating.grade)
+        book.averageRating =
+            tableRating.reduce((a, b) => a + b, 0) / tableRating.length
+        await book.save()
+
+        return res.status(200).json(book)
     } catch (error) {
+        console.log("Je suis un gamer")
         res.status(400).json({ error })
     }
 }
