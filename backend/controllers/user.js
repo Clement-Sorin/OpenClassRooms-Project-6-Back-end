@@ -2,6 +2,7 @@ require("dotenv").config()
 const User = require("../models/User")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
+const { isEmail, isStrongPassword } = require("validator")
 
 exports.signup = async (req, res, next) => {
     try {
@@ -10,12 +11,19 @@ exports.signup = async (req, res, next) => {
             email: req.body.email,
             password: hash,
         })
+        const users = await User.find()
+        const emailExist = users.some((user) => user.email === req.body.email)
 
-        try {
+        if (!isEmail(req.body.email) || !isStrongPassword(req.body.password)) {
+            res.status(400).json({ message: "wrong email or password format" })
+        }
+        if (emailExist) {
+            res.status(500).json({
+                message: "email already registered in database",
+            })
+        } else {
             await user.save()
             res.status(201).json({ message: "new user created" })
-        } catch (error) {
-            res.status(400).json({ error })
         }
     } catch (error) {
         res.status(500).json({ error })

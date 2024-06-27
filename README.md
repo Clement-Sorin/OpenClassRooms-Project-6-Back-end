@@ -20,6 +20,7 @@ Sixth project of the OpenClassrooms Web Developer course
 - JSON Web Token
 - Multer
 - Sharp
+- Validator
 
 ## Goal 
 
