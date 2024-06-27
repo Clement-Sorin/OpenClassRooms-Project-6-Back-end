@@ -24,7 +24,7 @@ const processImage = async (req, res, next) => {
 
         const buffer = await sharp(req.file.buffer)
             .resize({
-                width: 493,
+                //width: 493,
                 height: 595,
                 fit: sharp.fit.outside,
                 position: sharp.strategy.entropy,
