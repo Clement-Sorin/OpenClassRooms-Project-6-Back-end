@@ -48,7 +48,7 @@ exports.createBook = async (req, res, next) => {
             averageRating: 0,
         })
         await book.save()
-        res.status(201).json({ message: "Objet enregistré !" })
+        res.status(201).json({ message: "Book saved" })
     } catch (error) {
         res.status(400).json({ error })
     }
@@ -57,15 +57,15 @@ exports.createBook = async (req, res, next) => {
 exports.modifyBook = async (req, res, next) => {
     try {
         let bookObject
-        if (req.file) {
+        if (!req.file) {
+            bookObject = req.body
+        } else {
             bookObject = {
                 ...JSON.parse(req.body.book),
                 imageUrl: `${req.protocol}://${req.get("host")}/images/${
                     req.file.filename
                 }`,
             }
-        } else {
-            bookObject = { ...req.body }
         }
 
         delete bookObject._userId
@@ -78,8 +78,10 @@ exports.modifyBook = async (req, res, next) => {
         }
 
         try {
-            const filename = book.imageUrl.split("/images/")[1]
-            await fs.unlink(`images/${filename}`)
+            if (req.file && book.imageUrl) {
+                const filename = book.imageUrl.split("/images/")[1]
+                await fs.unlink(`images/${filename}`)
+            }
 
             await Book.updateOne(
                 { _id: req.params.id },
@@ -91,6 +93,7 @@ exports.modifyBook = async (req, res, next) => {
         }
     } catch (error) {
         res.status(400).json({ error })
+        console.log("erreur ici")
     }
 }
 

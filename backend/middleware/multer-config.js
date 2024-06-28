@@ -13,7 +13,7 @@ const upload = multer({ storage: storage }).single("image")
 
 const processImage = async (req, res, next) => {
     if (!req.file) {
-        return res.status(400).json({ error: "No file uploaded." })
+        return next() // Continue to the next middleware if no file is uploaded
     }
 
     try {
