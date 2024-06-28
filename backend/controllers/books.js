@@ -130,13 +130,13 @@ exports.addRating = async (req, res) => {
         }
 
         const book = await Book.findById(req.params.id)
-        const userIdExists = book.ratings.some(
+        const rateUserIdExists = book.ratings.some(
             (rating) => rating.userId === requestUserId
         )
 
         if (
             requestUserId === book.userId ||
-            (userIdExists && requestRating >= 0 && requestRating <= 5)
+            (rateUserIdExists && requestRating >= 0 && requestRating <= 5)
         ) {
             // Erreur non gérer dans le frontend :
             // res.status(400).json({ message: "Vous n'avez pas le droit" })
