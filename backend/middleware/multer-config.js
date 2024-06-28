@@ -11,7 +11,7 @@ const MIME_TYPES = {
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage }).single("image")
 
-const processImage = async (req, res, next) => {
+const processImage = async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: "No file uploaded." })
     }
@@ -24,7 +24,6 @@ const processImage = async (req, res, next) => {
 
         const buffer = await sharp(req.file.buffer)
             .resize({
-                //width: 493,
                 height: 595,
                 fit: sharp.fit.outside,
                 position: sharp.strategy.entropy,
@@ -36,8 +35,6 @@ const processImage = async (req, res, next) => {
         await fs.writeFile(imagePath, buffer)
 
         req.file.filename = fileName
-
-        next()
     } catch (error) {
         console.error("Error processing image:", error)
         res.status(500).json({ error: "Internal server error." })
