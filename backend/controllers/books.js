@@ -80,6 +80,7 @@ exports.modifyBook = async (req, res, next) => {
         try {
             const filename = book.imageUrl.split("/images/")[1]
             await fs.unlink(`images/${filename}`)
+
             await Book.updateOne(
                 { _id: req.params.id },
                 { ...bookObject, _id: req.params.id }
