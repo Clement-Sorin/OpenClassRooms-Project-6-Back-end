@@ -7,12 +7,17 @@ const userRouter = require("./routes/user")
 
 const app = express()
 
-mongoose
-    .connect(
-        `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}/?retryWrites=true&w=majority&appName=Cluster0`
-    )
-    .then(() => console.log("Connection to MongoDB completed"))
-    .catch(() => console.log("Connection to MongoDB failed"))
+async function connectToMongoDB() {
+    try {
+        await mongoose.connect(
+            `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}/?retryWrites=true&w=majority&appName=Cluster0`
+        )
+        console.log("Connection to MongoDB completed")
+    } catch (error) {
+        console.log("Connection to MongoDB failed", error)
+    }
+}
+connectToMongoDB()
 
 app.use(express.json())
 
