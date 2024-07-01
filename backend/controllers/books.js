@@ -29,7 +29,7 @@ exports.getBestRating = async (req, res, next) => {
             .slice(0, 3)
         res.status(200).json(topRated)
     } catch (error) {
-        res.status(404).json({ error })
+        res.status(400).json({ error })
     }
 }
 
@@ -116,7 +116,7 @@ exports.deleteBook = async (req, res, next) => {
         }
     } catch (error) {
         console.error(error)
-        res.status(500).json({ error })
+        res.status(400).json({ error })
     }
 }
 
@@ -140,7 +140,7 @@ exports.addRating = async (req, res) => {
         ) {
             // Erreur non gérer dans le frontend :
             // res.status(400).json({ message: "Vous n'avez pas le droit" })
-            // Pour éviter un crash du serveur je retourne une réponse 200 avec le book
+            // Pour éviter un crash du serveur je retourne exceptionnellement une réponse 200 avec le book
             return res.status(200).json(book)
         }
 
@@ -153,9 +153,8 @@ exports.addRating = async (req, res) => {
             tableRating.reduce((a, b) => a + b, 0) / tableRating.length
         await book.save()
 
-        return res.status(200).json(book)
+        return res.status(201).json(book)
     } catch (error) {
-        console.log("Je suis un gamer")
         res.status(400).json({ error })
     }
 }

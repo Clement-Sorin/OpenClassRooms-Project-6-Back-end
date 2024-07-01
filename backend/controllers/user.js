@@ -18,7 +18,7 @@ exports.signup = async (req, res, next) => {
             res.status(400).json({ message: "wrong email or password format" })
         }
         if (emailExist) {
-            res.status(500).json({
+            res.status(401).json({
                 message: "email already registered in database",
             })
         } else {
@@ -26,7 +26,7 @@ exports.signup = async (req, res, next) => {
             res.status(201).json({ message: "new user created" })
         }
     } catch (error) {
-        res.status(500).json({ error })
+        res.status(400).json({ error })
     }
 }
 
@@ -49,6 +49,6 @@ exports.login = async (req, res, next) => {
             }),
         })
     } catch (error) {
-        res.status(500).json({ error })
+        res.status(400).json({ error })
     }
 }
